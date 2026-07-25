@@ -1,0 +1,27 @@
+[package]
+name = "aether-sdk"
+version = "0.1.0"
+edition = "2021"
+description = "Aether Protocol Enterprise SDK — Identity Manager, Monitoring, SLA"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/aether-protocol/aether-sdk"
+keywords = ["aether", "sdk", "enterprise", "identity", "monitoring"]
+categories = ["network-programming", "cryptography"]
+
+[dependencies]
+aether-core = { path = "../aether-core" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+metrics = "0.22"
+metrics-exporter-prometheus = "0.13"
+tokio = { version = "1", features = ["rt", "macros", "sync", "time"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"
+ed25519-dalek = "2"
+hex = "0.4"
+zeroize = "1"
+rand = "0.8"
+
+[dev-dependencies]
+tempfile = "3"

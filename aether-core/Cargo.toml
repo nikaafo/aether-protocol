@@ -1,0 +1,52 @@
+[package]
+name = "aether-core"
+version = "0.1.0"
+edition = "2021"
+description = "Aether Protocol — универсальный L4 транспорт с нулевым доверием"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/aether-protocol/aether-core"
+keywords = ["protocol", "transport", "quic-alternative", "p2p", "networking"]
+categories = ["network-programming", "cryptography"]
+
+[dependencies]
+# Криптография
+ring = "0.17"
+# CBOR для handshake-сообщений
+minicbor = { version = "0.24", features = ["alloc", "std"] }
+# Асинхронный runtime
+tokio = { version = "1", features = ["net", "time", "sync", "rt", "macros"] }
+# Логирование
+tracing = "0.1"
+# Генерация случайных чисел
+rand = "0.8"
+rand_core = { version = "0.6", features = ["std"] }
+# Кодирование
+hex = "0.4"
+# Сериализация
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# Хеширование
+sha2 = "0.10"
+hmac = "0.12"
+hkdf = "0.12"
+# Базовая криптография (x25519, ed25519)
+ed25519-dalek = { version = "2", features = ["rand_core"] }
+x25519-dalek = "2"
+aead = "0.5"
+aes-gcm = "0.10"
+chacha20poly1305 = "0.10"
+zeroize = { version = "1", features = ["derive"] }
+
+[dev-dependencies]
+criterion = "0.5"
+test-log = "0.2"
+tracing-subscriber = "0.3"
+
+[[bench]]
+name = "framing_bench"
+harness = false
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
