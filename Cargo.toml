@@ -1,5 +1,5 @@
 [workspace]
-members = ["aether-core", "aether-sdk", "demo"]
+members = ["aether-core", "aether-sdk", "aether-gateway", "demo"]
 resolver = "2"
 
 [workspace.package]
