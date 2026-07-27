@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="info"
+     docName="draft-fomicheva-aether-00"
+     ipr="trust200902" obsoletes="" updates=""
+     submissionType="independent"
+     xml:lang="en" version="3">
+<front>
+  <title abbrev="Aether Protocol">Aether: A Next-Generation L4 Transport</title>
+  <seriesInfo name="Internet-Draft" value="draft-fomicheva-aether-00"/>
+  <author initials="V." surname="Fomicheva" fullname="Veronika Fomicheva">
+    <organization>Aether Protocol Working Group</organization>
+    <address>
+      <email>nikaafo@github</email>
+      <uri>https://github.com/nikaafo/aether-protocol</uri>
+    </address>
+  </author>
+  <date year="2026" month="July" day="27"/>
+  <area>Transport</area>
+  <workgroup>Independent Submission</workgroup>
+  <abstract>
+    <t>This document specifies Aether, a transport-layer protocol (L4) designed for
+    modern network environments requiring multiplexed streams without head-of-line
+    blocking, mandatory encryption with post-quantum resistance, multi-path routing,
+    and self-sovereign identity at the protocol layer. Aether operates entirely in
+    userspace without kernel modifications.</t>
+  </abstract>
+</front>
+<middle>
+<section anchor="introduction"><name>Introduction</name>
+<section anchor="motivation"><name>Motivation</name>
+<t>Transport-layer protocols have evolved slowly. TCP <xref target="RFC9293"/> provides
+reliable, ordered delivery but suffers from head-of-line blocking and requires separate
+TLS for encryption. UDP <xref target="RFC768"/> is lightweight but unreliable. QUIC
+<xref target="RFC9000"/> addresses many of TCP's shortcomings but is tightly coupled
+to HTTP/3.</t>
+<t>Aether is a general-purpose L4 transport protocol designed for:</t>
+<ul>
+<li>Stream multiplexing without head-of-line blocking</li>
+<li>Mandatory encryption with post-quantum resistance</li>
+<li>Multi-path connections (seamless network switching)</li>
+<li>Self-sovereign identity at the protocol layer</li>
+<li>Userspace operation (no kernel modifications required)</li>
+</ul>
+</section>
+<section anchor="design-philosophy"><name>Design Philosophy</name>
+<table anchor="table-design">
+  <name>Design Principles and Application in Aether</name>
+  <thead><tr><th>Principle</th><th>Application in Aether</th></tr></thead>
+  <tbody>
+    <tr><td>Simple core</td><td>Fixed 16-byte base header; features via extensions</td></tr>
+    <tr><td>Security non-optional</td><td>AEAD encryption from first packet; no plaintext mode</td></tr>
+    <tr><td>Versioning</td><td>First packet declares version and capabilities</td></tr>
+    <tr><td>Self-describing</td><td>Protocol metadata embedded in handshake</td></tr>
+    <tr><td>Userspace-first</td><td>No OS kernel modifications required</td></tr>
+  </tbody>
+</table>
+</section>
+</section>
+
+<section anchor="wire-format"><name>Wire Format</name>
+<section anchor="base-header"><name>Base Header (16 bytes)</name>
+<figure><artwork><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| Ver |  Type   |H|E|R|         Stream ID                       |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                           Offset (32 bits)                     |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                           Length (32 bits)                     |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|              Connection ID (32 bits, short header)             |
+|         or Destination Connection ID (long header)             |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork></figure>
+<table anchor="table-header-fields">
+  <name>Header Fields</name>
+  <thead><tr><th>Field</th><th>Bits</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td>Ver</td><td>4</td><td>Protocol version. Starts at 0.</td></tr>
+    <tr><td>Type</td><td>6</td><td>Packet type (see <xref target="packet-types"/>)</td></tr>
+    <tr><td>H</td><td>1</td><td>0 = Short header, 1 = Long header</td></tr>
+    <tr><td>E</td><td>1</td><td>Extensions present</td></tr>
+    <tr><td>R</td><td>2</td><td>Reserved (MUST be 0)</td></tr>
+    <tr><td>Stream ID</td><td>18</td><td>Stream identifier (0..262143)</td></tr>
+    <tr><td>Offset</td><td>32</td><td>Byte offset in stream</td></tr>
+    <tr><td>Length</td><td>32</td><td>Payload length (bytes)</td></tr>
+    <tr><td>Cnx ID</td><td>32/64</td><td>Short: 32-bit truncated CID. Long: 64-bit full Dest CID.</td></tr>
+  </tbody>
+</table>
+</section>
+<section anchor="long-header"><name>Long Header</name>
+<t>Long header adds 8 additional bytes after the base header containing the Source Connection ID (64 bits). Total: Long Header = 24 bytes, Short Header = 16 bytes.</t>
+</section>
+<section anchor="packet-types"><name>Packet Types</name>
+<table anchor="table-packet-types">
+  <name>Packet Types (6-bit Type field)</name>
+  <thead><tr><th>Code</th><th>Name</th><th>Purpose</th><th>Header</th></tr></thead>
+  <tbody>
+    <tr><td>0x00</td><td>Initial</td><td>First packet, ClientHello</td><td>Long</td></tr>
+    <tr><td>0x01</td><td>Handshake</td><td>Crypto handshake</td><td>Long</td></tr>
+    <tr><td>0x02</td><td>Data</td><td>User stream data</td><td>Short</td></tr>
+    <tr><td>0x03</td><td>Ack</td><td>Packet acknowledgement</td><td>Short</td></tr>
+    <tr><td>0x04</td><td>Close</td><td>Connection close + code</td><td>Short</td></tr>
+    <tr><td>0x05</td><td>Ping</td><td>Keep-alive</td><td>Short</td></tr>
+    <tr><td>0x06</td><td>PathChallenge</td><td>Validate new path</td><td>Short</td></tr>
+    <tr><td>0x07</td><td>PathResponse</td><td>Confirm path</td><td>Short</td></tr>
+    <tr><td>0x08</td><td>StreamOpen</td><td>Open new stream</td><td>Short</td></tr>
+    <tr><td>0x09</td><td>StreamClose</td><td>Close stream (FIN)</td><td>Short</td></tr>
+    <tr><td>0x0A-0x3F</td><td>Reserved</td><td>For future use</td><td>-</td></tr>
+  </tbody>
+</table>
+</section>
+<section anchor="extensions"><name>Extension Chain</name>
+<t>When bit E is set, a TLV extension chain follows the header. Chain terminates with Ext Type 0x00.</t>
+<table anchor="table-extensions">
+  <name>Extension Types</name>
+  <thead><tr><th>Code</th><th>Name</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td>0x01</td><td>Timestamp</td><td>Sender timestamp (64-bit, microseconds)</td></tr>
+    <tr><td>0x02</td><td>Priority</td><td>Stream priority (8 bits)</td></tr>
+    <tr><td>0x03</td><td>Padding</td><td>Anti-traffic-analysis padding</td></tr>
+    <tr><td>0x04</td><td>PathId</td><td>Multi-path identifier</td></tr>
+    <tr><td>0x05</td><td>FlowControl</td><td>Window update</td></tr>
+  </tbody>
+</table>
+</section>
+</section>
+
+<section anchor="handshake"><name>Handshake</name>
+<section anchor="handshake-phases"><name>Handshake Phases</name>
+<t>The handshake completes in 1-RTT:</t>
+<figure><artwork><![CDATA[
+Client                                  Server
+  |                                       |
+  |--- Initial (ClientHello) ------------>|
+  |                                       |
+  |<-- Initial (ServerHello) -------------|
+  |                                       |
+  |--- Handshake (ClientFinished) ------->|  Client can now send Data
+  |                                       |
+  |<-- Handshake (ServerFinished) --------|  Server can now send Data
+  |                                       |
+  |<======= Data (Encrypted) ===========>|
+]]></artwork></figure>
+</section>
+<section anchor="clienthello"><name>ClientHello</name>
+<t>CBOR-encoded, inside AEAD-encrypted Initial packet payload. Contains: protocol version (0), 64-bit random client CID, supported version list, crypto parameters (Kyber768 + X25519, AES-256-GCM, SHA-256), capabilities (multipath, max_streams, max_stream_data, ack_frequency, idle_timeout_ms), and an Ed25519 identity public key.</t>
+</section>
+<section anchor="serverhello"><name>ServerHello</name>
+<t>CBOR-encoded response containing: echoed client CID, server CID, Kyber768 ciphertext, X25519 ephemeral public key, server capabilities, and server Ed25519 identity with proof (signature of transcript).</t>
+</section>
+<section anchor="key-derivation"><name>Key Derivation</name>
+<t>After ClientHello and ServerHello exchange:</t>
+<figure><artwork><![CDATA[
+shared_secret = Kyber768.Decapsulate(kem_ciphertext)
+                || X25519.DH(client_ephemeral, server_classical_pk)
+
+transcript = ClientHello || ServerHello
+
+session_key = HKDF-Expand(
+    HKDF-Extract("AETHER-v0", shared_secret),
+    transcript,
+    256 bits
+)
+
+client_tx_key = HKDF-Expand(session_key, "client-tx", key_len)
+server_tx_key = HKDF-Expand(session_key, "server-tx", key_len)
+]]></artwork></figure>
+<t>ClientFinished and ServerFinished carry HMAC-SHA256(session_key, transcript). Symmetric keys are destroyed after 3x PTO following connection close, providing Perfect Forward Secrecy.</t>
+</section>
+</section>
+
+<section anchor="streams"><name>Streams</name>
+<t>Each stream identified by 18-bit Stream ID (0..262143). Stream ID 0 reserved for control. Client opens streams with EVEN IDs; server with ODD IDs. Streams are independent: loss in one stream does not block others.</t>
+<t>Stream lifecycle: IDLE -> (StreamOpen) -> OPEN -> (StreamClose FIN) -> HALF-CLOSED -> (StreamClose ACK) -> CLOSED.</t>
+<t>Flow control operates at two levels: Connection-level (total in-flight data) and Stream-level (in-flight data per stream). Initial windows: Stream = 1 MiB, Connection = 16 MiB. Each Data packet carries an Offset (byte position). Receivers send Ack frames with received offset ranges. Unacknowledged packets are retransmitted with exponential back-off up to MAX_RETRANSMISSIONS (10).</t>
+</section>
+
+<section anchor="multi-path"><name>Multi-Path</name>
+<t>Connections are identified by Connection ID, not IP address. This enables path migration:</t>
+<ol>
+<li>Client detects a new network interface (e.g., 5G after Wi-Fi).</li>
+<li>Client sends PathChallenge from new IP to server.</li>
+<li>Server responds with PathResponse, confirming the new path belongs to the same connection.</li>
+<li>Server begins sending data on both paths.</li>
+<li>Client may duplicate data on both paths for reliability.</li>
+</ol>
+<t>Each path has a unique Path ID (Extension Type 0x04). Packets from different paths are multiplexed onto common streams; the receiver reassembles by Offset. When one path is lost, data automatically flows through remaining paths without connection interruption.</t>
+</section>
+
+<section anchor="congestion-control"><name>Congestion Control</name>
+<t>The default congestion control algorithm is Aether-CC, a hybrid of BBRv3 <xref target="BBR"/> and NewReno <xref target="RFC6582"/>, optimized for high-latency satellite links, variable-bandwidth mobile networks, and noisy channels (distinguishing loss from congestion).</t>
+<t>Bandwidth estimation: delivery_rate = bytes_acked / time_delta; max_bw = max(max_bw, delivery_rate). RTT estimation: min_rtt = min(min_rtt, latest_rtt) over 10-second window. Congestion window: cwnd = max_bw * min_rtt * gain (gain: 1.25 during probing, 0.75 during drain).</t>
+<t>Loss classification: loss with low RTT and rising delivery_rate indicates congestion; loss with high RTT and stable delivery_rate indicates channel noise (window not reduced). Pluggable algorithms: "aether-cc" (default), "bbrv3", "cubic", "none" (testing).</t>
+</section>
+
+<section anchor="security"><name>Security Considerations</name>
+<t>Aether has no plaintext mode. All packets are encrypted: Initial packets with AEAD key derived from initial salt, Handshake packets with AEAD keys derived from shared_secret, Data packets with AEAD session_key.</t>
+<t>The handshake uses Kyber-768 <xref target="FIPS203"/> as primary KEM with X25519 <xref target="RFC7748"/> as classical fallback, providing post-quantum resistance as long as at least one algorithm remains secure.</t>
+<t>Metadata protection: Connection ID in short header is a 32-bit truncated value; Padding extension (0x03) allows random bytes for packet size obfuscation; Multipath data streams complicate passive traffic analysis.</t>
+<t>Each connection generates ephemeral keys. Compromise of an identity key does not reveal past sessions (Perfect Forward Secrecy).</t>
+</section>
+
+<section anchor="identity"><name>Identity Layer</name>
+<t>Aether introduces cryptographic identity at the transport layer. Each node has an Ed25519 <xref target="RFC8032"/> key pair. Identity is: identity = SHA-256("AETHER-ID-" || Ed25519_public_key). During handshake, the node proves key ownership by signing the transcript.</t>
+<t>Advantages: DNS/CA/PKI independent (self-sovereign identity), IP mobility (IP changes do not affect identity), decentralized (no central registry required), W3C DID compatible (identity representable as a DID).</t>
+</section>
+
+<section anchor="connection-close"><name>Connection Close</name>
+<t>Graceful close: Sender -> Close (NO_ERROR), Receiver -> Close (NO_ERROR). Keys destroyed after 3x PTO.</t>
+<table anchor="table-error-codes">
+  <name>Error Codes</name>
+  <thead><tr><th>Code</th><th>Name</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td>0x00</td><td>NO_ERROR</td><td>Normal closure</td></tr>
+    <tr><td>0x01</td><td>INTERNAL_ERROR</td><td>Internal error</td></tr>
+    <tr><td>0x02</td><td>PROTOCOL_VIOLATION</td><td>Protocol violation</td></tr>
+    <tr><td>0x03</td><td>CRYPTO_ERROR</td><td>Cryptographic error</td></tr>
+    <tr><td>0x04</td><td>FLOW_CONTROL_ERROR</td><td>Flow control limit exceeded</td></tr>
+    <tr><td>0x05</td><td>TIMEOUT</td><td>Idle timeout</td></tr>
+    <tr><td>0x06</td><td>VERSION_NEGOTIATION</td><td>Incompatible version</td></tr>
+    <tr><td>0x07</td><td>REFUSED</td><td>Connection refused</td></tr>
+    <tr><td>0x08</td><td>IDENTITY_REJECTED</td><td>Identity not accepted</td></tr>
+  </tbody>
+</table>
+</section>
+
+<section anchor="discovery"><name>Discovery</name>
+<t><strong>Local discovery (LAN):</strong> Multicast group 224.0.0.251:9000 (IPv4), ff02::fb:9000 (IPv6). Periodic announcements every 30 seconds. Announcement format: Initial packet with type "Announce" in extensions.</t>
+<t><strong>Global discovery (WAN):</strong> Kademlia-based DHT (as in libp2p). DHT key = peer identity. DHT value = set of (IP, port, Connection ID) tuples. Enables peer location by identity without a centralized server.</t>
+</section>
+
+<section anchor="constants"><name>Constants</name>
+<table anchor="table-constants">
+  <name>Protocol Constants</name>
+  <thead><tr><th>Constant</th><th>Value</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td>AETHER_DEFAULT_PORT</td><td>9000</td><td>Default port</td></tr>
+    <tr><td>AETHER_VERSION</td><td>0</td><td>Current protocol version</td></tr>
+    <tr><td>MAX_PACKET_SIZE</td><td>1400</td><td>Max packet size (MTU safe)</td></tr>
+    <tr><td>MAX_STREAM_ID</td><td>262143</td><td>Max Stream ID (18 bits)</td></tr>
+    <tr><td>IDLE_TIMEOUT_MS</td><td>30000</td><td>Connection idle timeout (ms)</td></tr>
+    <tr><td>PTO_BASE_MS</td><td>100</td><td>Base Probe Timeout (ms)</td></tr>
+    <tr><td>MAX_RETRANSMISSIONS</td><td>10</td><td>Max retransmit attempts</td></tr>
+    <tr><td>INITIAL_CWND</td><td>10 * MSS</td><td>Initial congestion window</td></tr>
+    <tr><td>INITIAL_STREAM_WINDOW</td><td>1048576</td><td>Initial stream window (bytes)</td></tr>
+    <tr><td>INITIAL_CONNECTION_WINDOW</td><td>16777216</td><td>Initial connection window (bytes)</td></tr>
+  </tbody>
+</table>
+</section>
+
+<section anchor="comparison"><name>Comparison with Existing Protocols</name>
+<table anchor="table-comparison">
+  <name>Protocol Comparison</name>
+  <thead><tr><th>Feature</th><th>TCP</th><th>UDP</th><th>QUIC</th><th>SCTP</th><th>Aether</th></tr></thead>
+  <tbody>
+    <tr><td>Reliable</td><td>Yes</td><td>No</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Multiplexing</td><td>No</td><td>No</td><td>Yes*</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Encryption</td><td>No**</td><td>No</td><td>Yes</td><td>No**</td><td>Yes</td></tr>
+    <tr><td>Multi-path</td><td>No</td><td>No</td><td>v2</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Userspace</td><td>No</td><td>Yes</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+    <tr><td>Identity layer</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
+    <tr><td>PQC-ready</td><td>No</td><td>No</td><td>WIP</td><td>No</td><td>Yes</td></tr>
+    <tr><td>NAT friendly</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+    <tr><td>HOL blocking</td><td>Yes</td><td>No</td><td>Per stream</td><td>No</td><td>No</td></tr>
+  </tbody>
+</table>
+<t>* HTTP-tied. ** Requires separate TLS/DTLS layer.</t>
+</section>
+
+<section anchor="iana"><name>IANA Considerations</name>
+<t>This document requires no IANA actions. Future revisions may request a well-known port assignment for port 9000.</t>
+</section>
+
+<section anchor="implementation"><name>Reference Implementation</name>
+<t>A reference implementation of Aether Protocol v0.1 is available in the Rust programming language at <eref target="https://github.com/nikaafo/aether-protocol"/>.</t>
+<t>Components:</t>
+<ul>
+<li>aether-core: Protocol library (framing, handshake, crypto, multipath, congestion control, identity, discovery).</li>
+<li>aether-sdk: Enterprise SDK (identity vault, monitoring, SLA).</li>
+<li>aether-gateway: L4 proxy for Aether-to-TCP bridging.</li>
+<li>demo: Example application.</li>
+</ul>
+<t>License: MIT OR Apache-2.0.</t>
+</section>
+
+</middle>
+<back>
+<references><name>References</name>
+<references><name>Normative References</name>
+<reference anchor="RFC2119"><front><title>Key words for use in RFCs to Indicate Requirement Levels</title><author initials="S." surname="Bradner"/><date month="March" year="1997"/></front><seriesInfo name="BCP" value="14"/><seriesInfo name="RFC" value="2119"/></reference>
+<reference anchor="RFC5869"><front><title>HMAC-based Extract-and-Expand Key Derivation Function (HKDF)</title><author initials="H." surname="Krawczyk"/><author initials="P." surname="Eronen"/><date month="May" year="2010"/></front><seriesInfo name="RFC" value="5869"/></reference>
+<reference anchor="RFC7748"><front><title>Elliptic Curves for Security</title><author initials="A." surname="Langley"/><author initials="M." surname="Hamburg"/><author initials="S." surname="Turner"/><date month="January" year="2016"/></front><seriesInfo name="RFC" value="7748"/></reference>
+<reference anchor="RFC8032"><front><title>Edwards-Curve Digital Signature Algorithm (EdDSA)</title><author initials="S." surname="Josefsson"/><author initials="I." surname="Liusvaara"/><date month="January" year="2017"/></front><seriesInfo name="RFC" value="8032"/></reference>
+<reference anchor="RFC8446"><front><title>The Transport Layer Security (TLS) Protocol Version 1.3</title><author initials="E." surname="Rescorla"/><date month="August" year="2018"/></front><seriesInfo name="RFC" value="8446"/></reference>
+<reference anchor="RFC9000"><front><title>QUIC: A UDP-Based Multiplexed and Secure Transport</title><author initials="J." surname="Iyengar"/><author initials="M." surname="Thomson"/><date month="May" year="2021"/></front><seriesInfo name="RFC" value="9000"/></reference>
+<reference anchor="FIPS203"><front><title>Module-Lattice-Based Key-Encapsulation Mechanism Standard</title><author><organization>NIST</organization></author><date month="August" year="2024"/></front><seriesInfo name="FIPS" value="203"/></reference>
+</references>
+<references><name>Informative References</name>
+<reference anchor="RFC6582"><front><title>The NewReno Modification to TCP's Fast Recovery Algorithm</title><author initials="T." surname="Henderson"/><author initials="S." surname="Floyd"/><author initials="A." surname="Gurtov"/><author initials="Y." surname="Nishida"/><date month="April" year="2012"/></front><seriesInfo name="RFC" value="6582"/></reference>
+<reference anchor="RFC768"><front><title>User Datagram Protocol</title><author initials="J." surname="Postel"/><date month="August" year="1980"/></front><seriesInfo name="STD" value="6"/><seriesInfo name="RFC" value="768"/></reference>
+<reference anchor="RFC9293"><front><title>Transmission Control Protocol (TCP)</title><author initials="W." surname="Eddy"/><date month="August" year="2022"/></front><seriesInfo name="STD" value="7"/><seriesInfo name="RFC" value="9293"/></reference>
+<reference anchor="BBR"><front><title>BBR: Congestion-Based Congestion Control</title><author initials="N." surname="Cardwell"/><author><organization/></author><date year="2016"/></front><seriesInfo name="ACM Queue" value=""/></reference>
+</references>
+</references>
+</back>
+</rfc>
