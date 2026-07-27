@@ -55,7 +55,32 @@
     .links-list a { color:var(--accent); text-decoration:none; }
     .links-list a:hover { color:var(--accent2); text-decoration:underline; }
     footer { border-top:1px solid var(--border); padding:40px 0; text-align:center; color:var(--text2); font-size:14px; }
-    @media(max-width:768px){ .hero h1{font-size:36px} .nav-links{display:none} }
+    @media(max-width:1024px){
+      .hero h1{font-size:44px}
+      .section-title{font-size:28px}
+      .features-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    }
+    @media(max-width:768px){
+      .hero h1{font-size:36px}
+      .hero p{font-size:16px}
+      .section{padding:60px 0}
+      .section-title{font-size:24px}
+      .section-subtitle{font-size:16px}
+      .features-grid{grid-template-columns:1fr}
+      .hero-buttons{flex-direction:column;align-items:center}
+      .hero-buttons .btn{width:100%;max-width:280px}
+      nav{flex-direction:column;gap:12px}
+      .nav-center{width:100%;justify-content:center}
+      pre{font-size:12px;padding:16px}
+      .links-list li{font-size:14px}
+    }
+    @media(max-width:480px){
+      .hero h1{font-size:28px}
+      .hero{padding:60px 0 40px}
+      .container{padding:0 16px}
+      .btn{padding:10px 20px;font-size:13px}
+      .feature{padding:20px}
+    }
   </style>
 </head>
 <body>
@@ -68,7 +93,7 @@
         <a href="#quickstart">Quick Start</a>
         <a href="#resources">Resources</a>
       </div>
-      <a href="https://github.com/veroikafomich/aether-protocol" class="btn btn-primary" target="_blank">GitHub</a>
+      <a href="https://github.com/nikaafo/aether-protocol" class="btn btn-primary" target="_blank">GitHub</a>
     </nav>
   </div>
 
@@ -77,7 +102,7 @@
     <p>Aether is an L4 transport protocol built for multiplexing, encryption, multi-path routing, and self-sovereign identity — without the overhead of TCP.</p>
     <div class="hero-buttons">
       <a href="#quickstart" class="btn btn-primary">Get Started</a>
-      <a href="https://github.com/veroikafomich/aether-protocol" class="btn" target="_blank">View on GitHub</a>
+      <a href="https://github.com/nikaafo/aether-protocol" class="btn" target="_blank">View on GitHub</a>
     </div>
   </div>
 
@@ -115,7 +140,7 @@
   <div class="container section" id="quickstart">
     <h2 class="section-title">Quick Start</h2>
     <p class="section-subtitle">Run the Aether Gateway in under a minute.</p>
-    <pre><code>git clone https://github.com/veroikafomich/aether-protocol.git
+    <pre><code>git clone https://github.com/nikaafo/aether-protocol.git
 cd aether-protocol/aether-gateway
 cargo run --release -- --target 127.0.0.1:8080</code></pre>
   </div>
