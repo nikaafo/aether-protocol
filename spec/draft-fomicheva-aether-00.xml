@@ -43,7 +43,7 @@ to HTTP/3.</t>
 </ul>
 </section>
 <section anchor="design-philosophy"><name>Design Philosophy</name>
-<table anchor="table-design">
+<table anchor="tbl-design">
   <name>Design Principles and Application in Aether</name>
   <thead><tr><th>Principle</th><th>Application in Aether</th></tr></thead>
   <tbody>
@@ -73,7 +73,7 @@ to HTTP/3.</t>
 |         or Destination Connection ID (long header)             |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ]]></artwork></figure>
-<table anchor="table-header-fields">
+<table anchor="tbl-header-fields">
   <name>Header Fields</name>
   <thead><tr><th>Field</th><th>Bits</th><th>Description</th></tr></thead>
   <tbody>
@@ -93,7 +93,7 @@ to HTTP/3.</t>
 <t>Long header adds 8 additional bytes after the base header containing the Source Connection ID (64 bits). Total: Long Header = 24 bytes, Short Header = 16 bytes.</t>
 </section>
 <section anchor="packet-types"><name>Packet Types</name>
-<table anchor="table-packet-types">
+<table anchor="tbl-packet-types">
   <name>Packet Types (6-bit Type field)</name>
   <thead><tr><th>Code</th><th>Name</th><th>Purpose</th><th>Header</th></tr></thead>
   <tbody>
@@ -113,7 +113,7 @@ to HTTP/3.</t>
 </section>
 <section anchor="extensions"><name>Extension Chain</name>
 <t>When bit E is set, a TLV extension chain follows the header. Chain terminates with Ext Type 0x00.</t>
-<table anchor="table-extensions">
+<table anchor="tbl-extensions">
   <name>Extension Types</name>
   <thead><tr><th>Code</th><th>Name</th><th>Description</th></tr></thead>
   <tbody>
@@ -209,7 +209,7 @@ server_tx_key = HKDF-Expand(session_key, "server-tx", key_len)
 
 <section anchor="connection-close"><name>Connection Close</name>
 <t>Graceful close: Sender -> Close (NO_ERROR), Receiver -> Close (NO_ERROR). Keys destroyed after 3x PTO.</t>
-<table anchor="table-error-codes">
+<table anchor="tbl-error-codes">
   <name>Error Codes</name>
   <thead><tr><th>Code</th><th>Name</th><th>Description</th></tr></thead>
   <tbody>
@@ -232,7 +232,7 @@ server_tx_key = HKDF-Expand(session_key, "server-tx", key_len)
 </section>
 
 <section anchor="constants"><name>Constants</name>
-<table anchor="table-constants">
+<table anchor="tbl-constants">
   <name>Protocol Constants</name>
   <thead><tr><th>Constant</th><th>Value</th><th>Description</th></tr></thead>
   <tbody>
@@ -251,7 +251,7 @@ server_tx_key = HKDF-Expand(session_key, "server-tx", key_len)
 </section>
 
 <section anchor="comparison"><name>Comparison with Existing Protocols</name>
-<table anchor="table-comparison">
+<table anchor="tbl-comparison">
   <name>Protocol Comparison</name>
   <thead><tr><th>Feature</th><th>TCP</th><th>UDP</th><th>QUIC</th><th>SCTP</th><th>Aether</th></tr></thead>
   <tbody>
