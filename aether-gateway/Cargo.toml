@@ -1,7 +1,7 @@
 [package]
 name = "aether-gateway"
 version = "0.1.0"
-edition = "2026"
+edition = "2024"
 description = "Aether Gateway — L4 proxy for accepting Aether connections and proxying to TCP/HTTP"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/nikaafo/aether-protocol"
