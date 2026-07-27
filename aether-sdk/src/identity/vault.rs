@@ -112,7 +112,7 @@ impl KeyVault for EnvVault {
     }
 
     fn save_identity(&self, identity: &Identity) -> Result<(), String> {
-        let hex = identity.hash_hex();
+        let _hex = identity.hash_hex();
         // Note: cannot set env vars programmatically in Rust safely.
         // In production, this would write to a secrets manager.
         tracing::info!("Identity saved (env var {} would be set)", self.var_name);

@@ -8,11 +8,9 @@
 
 pub mod vault;
 pub mod rotation;
-pub mod revocation;
 
 use aether_core::Identity;
 use serde::{Deserialize, Serialize};
-use zeroize::Zeroize;
 
 use self::vault::KeyVault;
 
@@ -73,12 +71,14 @@ impl IdentityManager {
             _ => return Err(format!("Unknown vault type: {}", config.vault_type)),
         };
 
-        let identity = vault.load_identity()
-            .or_else(|_| {
+        let identity = match vault.load_identity() {
+            Ok(id) => id,
+            Err(_) => {
                 let id = Identity::generate();
                 vault.save_identity(&id)?;
-                Ok(id)
-            })?;
+                id
+            }
+        };
 
         Ok(Self {
             identity,

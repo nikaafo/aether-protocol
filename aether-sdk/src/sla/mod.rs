@@ -1,4 +1,4 @@
-aether-protocol, neurocompute, i_fortress, causalmind, iuy - проектов полно у меня и я запуталась что, какой и зачем//! SLA Enforcer — Quality of Service policies for Aether connections.
+//! SLA Enforcer — Quality of Service policies for Aether connections.
 //!
 //! Supports:
 //! - YAML/JSON policy definitions
@@ -12,10 +12,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SlaPolicy {
     /// Policy version
-    pub version: String,## 🛡️ iuy + i_fortress — AI Safety (Софт + Железо)
-
-__Что продаём:__ Сертификацию AI-безопасности.
-
+    pub version: String,
     /// Provider identifier
     pub provider: String,
     /// SLA guarantees
@@ -81,7 +78,7 @@ impl SlaPolicy {
         throughput_mbps: u64,
         packet_loss_pct: f64,
     ) -> SlaCompliance {
-        let violations = Vec::new();
+        let mut violations = Vec::new();
 
         if handshake_p99_ms > self.guarantees.handshake_latency_p99_ms {
             violations.push(format!(
