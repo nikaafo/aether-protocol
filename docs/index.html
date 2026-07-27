@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aether Protocol — Next-Gen L4 Transport</title>
+  <meta name="description" content="Aether is a transport-layer protocol designed to replace TCP/UDP with multiplexing, encryption, multi-path, and self-sovereign identity.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0;padding:0;box-sizing:border-box; }
+    :root {
+      --bg:#0A0A0F; --bg2:#111119; --bg3:#161622; --border:rgba(229,228,226,0.12);
+      --text:#D4D4E0; --text2:#6B6B80; --accent:#DEA193; --accent2:#C8735C;
+      --gradient:linear-gradient(135deg,#E5E4E2 0%,#EDCBC2 40%,#DEA193 70%,#C8735C 100%);
+    }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+    h1, h2, h3, h4, .section-title { font-family:'Space Grotesk', sans-serif; }
+    .container { max-width:1100px; margin:0 auto; padding:0 24px; }
+    nav { display:flex; justify-content:space-between; align-items:center; padding:20px 0; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+    .logo-link { text-decoration:none; display:inline-flex; align-items:baseline; gap:0; }
+    .logo-a {
+      font-family:'Georgia',serif; font-style:italic; font-weight:900;
+      font-size:28px; line-height:1;
+      background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .nav-center { display:flex; gap:24px; align-items:center; flex-wrap:wrap; justify-content:center; flex:1; }
+    .nav-center a { color:var(--text2); text-decoration:none; font-size:14px; transition:color .2s; }
+    .nav-center a:hover { color:var(--text); }
+    .btn { padding:12px 28px; border-radius:16px; font-size:14px; font-weight:600; cursor:pointer; border:1px solid var(--border); text-decoration:none; display:inline-block; transition:all .3s; background:rgba(229,228,226,0.05); color:var(--text); }
+    .btn:hover { transform:scale(1.02); }
+    .btn-primary { background:var(--gradient); color:white; border:1px solid rgba(222,161,147,0.3); }
+    .btn-primary:hover { opacity:.9; transform:scale(1.02); }
+    .hero { text-align:center; padding:80px 0 60px; }
+    .hero h1 { font-size:56px; font-weight:800; line-height:1.1; letter-spacing:-1px; margin-bottom:20px; }
+    .hero h1 span { background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .hero p { font-size:20px; color:var(--text2); max-width:700px; margin:0 auto 32px; }
+    .hero-buttons { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+    .hero-buttons .btn { padding:14px 32px; font-size:16px; }
+    .section { padding:80px 0; }
+    .section-title { font-size:36px; font-weight:700; text-align:center; margin-bottom:16px; }
+    .section-subtitle { font-size:18px; color:var(--text2); text-align:center; max-width:600px; margin:0 auto 48px; }
+    .features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:24px; margin-top:40px; }
+    .feature { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:28px; transition:all .3s; }
+    .feature:hover { transform:scale(1.01); }
+    .feature h3 { font-size:18px; margin-bottom:8px; color:var(--text); }
+    .feature p { color:var(--text2); font-size:14px; }
+    .quickstart pre {
+      background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:24px;
+      overflow-x:auto; margin-top:24px; color:#d1d5db; font-size:14px; line-height:1.8;
+    }
+    .links-list { list-style:none; margin-top:24px; }
+    .links-list li { margin:14px 0; font-size:16px; }
+    .links-list a { color:var(--accent); text-decoration:none; }
+    .links-list a:hover { color:var(--accent2); text-decoration:underline; }
+    footer { border-top:1px solid var(--border); padding:40px 0; text-align:center; color:var(--text2); font-size:14px; }
+    @media(max-width:768px){ .hero h1{font-size:36px} .nav-links{display:none} }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <nav>
+      <a href="https://aether.dev" class="logo-link"><span class="logo-a">Aether</span></a>
+      <div class="nav-center">
+        <a href="#features">Features</a>
+        <a href="#quickstart">Quick Start</a>
+        <a href="#resources">Resources</a>
+      </div>
+      <a href="https://github.com/veroikafomich/aether-protocol" class="btn btn-primary" target="_blank">GitHub</a>
+    </nav>
+  </div>
+
+  <div class="container hero">
+    <h1>A transport protocol for the <span>next generation</span></h1>
+    <p>Aether is an L4 transport protocol built for multiplexing, encryption, multi-path routing, and self-sovereign identity — without the overhead of TCP.</p>
+    <div class="hero-buttons">
+      <a href="#quickstart" class="btn btn-primary">Get Started</a>
+      <a href="https://github.com/veroikafomich/aether-protocol" class="btn" target="_blank">View on GitHub</a>
+    </div>
+  </div>
+
+  <div class="container section" id="features">
+    <h2 class="section-title">Why Aether?</h2>
+    <p class="section-subtitle">Modern networks demand more than TCP and UDP can provide.</p>
+    <div class="features-grid">
+      <div class="feature">
+        <h3>Multiplexing</h3>
+        <p>Multiple logical streams over a single connection without head-of-line blocking.</p>
+      </div>
+      <div class="feature">
+        <h3>Encryption by Default</h3>
+        <p>All traffic is encrypted and authenticated using modern cryptographic primitives.</p>
+      </div>
+      <div class="feature">
+        <h3>Multi-Path</h3>
+        <p>Use multiple network paths simultaneously for better throughput and reliability.</p>
+      </div>
+      <div class="feature">
+        <h3>Self-Sovereign Identity</h3>
+        <p>Built-in peer identity without centralized CAs or certificate authorities.</p>
+      </div>
+      <div class="feature">
+        <h3>Low Latency</h3>
+        <p>Optimized for real-time applications: gaming, VoIP, distributed systems.</p>
+      </div>
+      <div class="feature">
+        <h3>Open Source</h3>
+        <p>Fully open protocol and reference implementation. No vendor lock-in.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container section" id="quickstart">
+    <h2 class="section-title">Quick Start</h2>
+    <p class="section-subtitle">Run the Aether Gateway in under a minute.</p>
+    <pre><code>git clone https://github.com/veroikafomich/aether-protocol.git
+cd aether-protocol/aether-gateway
+cargo run --release -- --target 127.0.0.1:8080</code></pre>
+  </div>
+
+  <div class="container section" id="resources">
+    <h2 class="section-title">Resources</h2>
+    <ul class="links-list">
+      <li><a href="https://github.com/nikaafo/aether-protocol" target="_blank">GitHub Repository</a></li>
+      <li><a href="spec/">Protocol Specification</a></li>
+      <li><a href="docs/">Documentation</a></li>
+      <li><a href="https://github.com/nikaafo/aether-protocol/blob/main/LICENSE" target="_blank">License (MIT / Apache-2.0)</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    <div class="container">
+      © 2026 Aether Protocol. Open source under MIT OR Apache-2.0.
+    </div>
+  </footer>
+
+</body>
+</html>
