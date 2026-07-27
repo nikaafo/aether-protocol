@@ -5,7 +5,7 @@ Expires: 27 January 2027
 
 
                  Aether: A Next-Generation L4 Transport
-                draft-veronikafomich-aether-protocol-00
+                draft-fomicheva-aether-00
 
 Abstract
 
@@ -60,18 +60,18 @@ Table of Contents
 
    1.  Introduction . . . . . . . . . . . . . . . . . . . . . . . .  3
      1.1.  Motivation . . . . . . . . . . . . . . . . . . . . . . .  3
-     1.2.  Design Philosophy . . . . . . . . . . . . . . . . . . . .  3
-   2.  Wire Format . . . . . . . . . . . . . . . . . . . . . . . . .  4
+     1.2.  Design Philosophy . . . . . . . . . . . . . . . . . . . . 3
+   2.  Wire Format . . . . . . . . . . . . . . . . . . . . . . . . . 4
      2.1.  Base Header (16 bytes) . . . . . . . . . . . . . . . . .  4
-     2.2.  Long Header . . . . . . . . . . . . . . . . . . . . . . .  5
+     2.2.  Long Header . . . . . . . . . . . . . . . . . . . . . . . 5
      2.3.  Packet Types . . . . . . . . . . . . . . . . . . . . . .  5
      2.4.  Extension Chain  . . . . . . . . . . . . . . . . . . . .  6
-   3.  Handshake . . . . . . . . . . . . . . . . . . . . . . . . . .  6
-     3.1.  Handshake Phases  . . . . . . . . . . . . . . . . . . . .  6
-     3.2.  ClientHello . . . . . . . . . . . . . . . . . . . . . . .  7
-     3.3.  ServerHello . . . . . . . . . . . . . . . . . . . . . . .  7
-     3.4.  Key Derivation  . . . . . . . . . . . . . . . . . . . . .  8
-   4.  Streams . . . . . . . . . . . . . . . . . . . . . . . . . . .  8
+   3.  Handshake . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+     3.1.  Handshake Phases  . . . . . . . . . . . . . . . . . . . . 6
+     3.2.  ClientHello . . . . . . . . . . . . . . . . . . . . . . . 7
+     3.3.  ServerHello . . . . . . . . . . . . . . . . . . . . . . . 7
+     3.4.  Key Derivation  . . . . . . . . . . . . . . . . . . . . . 8
+   4.  Streams . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
    5.  Multi-Path . . . . . . . . . . . . . . . . . . . . . . . . .  9
    6.  Congestion Control  . . . . . . . . . . . . . . . . . . . . . 10
    7.  Security Considerations  . . . . . . . . . . . . . . . . . .  10
@@ -79,11 +79,11 @@ Table of Contents
    9.  Connection Close  . . . . . . . . . . . . . . . . . . . . . . 12
    10. Discovery  . . . . . . . . . . . . . . . . . . . . . . . . .  12
    11. Constants  . . . . . . . . . . . . . . . . . . . . . . . . .  13
-   12. Comparison with Existing Protocols  . . . . . . . . . . . . .  14
+   12. Comparison with Existing Protocols  . . . . . . . . . . . . . 14
    13. IANA Considerations  . . . . . . . . . . . . . . . . . . . .  14
    14. References . . . . . . . . . . . . . . . . . . . . . . . . .  14
-     14.1.  Normative References . . . . . . . . . . . . . . . . .  14
-     14.2.  Informative References . . . . . . . . . . . . . . . .  15
+     14.1.  Normative References . . . . . . . . . . . . . . . . .   14
+     14.2.  Informative References . . . . . . . . . . . . . . . .   15
    Appendix A. Reference Implementation . . . . . . . . . . . . . .  15
    Author's Address . . . . . . . . . . . . . . . . . . . . . . . .  16
 
@@ -91,7 +91,7 @@ Table of Contents
 
 Fomicheva                   Expires 27 January 2027                [Page 2]
 
-Internet-Draft           Aether Protocol v0.1                 July 2026
+Internet-Draft              Aether Protocol v0.1                 July 2026
 
 
 1.  Introduction
@@ -140,8 +140,8 @@ Internet-Draft           Aether Protocol v0.1                 July 2026
 
 
 Fomicheva                   Expires 27 January 2027                [Page 3]
-
-Internet-Draft           Aether Protocol v0.1                 July 2026
+ 
+Internet-Draft              Aether Protocol v0.1                 July 2026
 
 
 2.  Wire Format
@@ -195,7 +195,7 @@ Internet-Draft           Aether Protocol v0.1                 July 2026
 
 Fomicheva                   Expires 27 January 2027                [Page 4]
 
-Internet-Draft           Aether Protocol v0.1                 July 2026
+Internet-Draft              Aether Protocol v0.1                 July 2026
 
 
 2.2.  Long Header
@@ -251,7 +251,7 @@ Internet-Draft           Aether Protocol v0.1                 July 2026
 
 Fomicheva                   Expires 27 January 2027                [Page 5]
 
-Internet-Draft           Aether Protocol v0.1                 July 2026
+Internet-Draft              Aether Protocol v0.1                 July 2026
 
 
 2.4.  Extension Chain
@@ -306,7 +306,7 @@ Internet-Draft           Aether Protocol v0.1                 July 2026
 
 Fomicheva                   Expires 27 January 2027                [Page 6]
 
-Internet-Draft           Aether Protocol v0.1                 July 2026
+Internet-Draft              Aether Protocol v0.1                 July 2026
 
 
 3.2.  ClientHello
@@ -362,7 +362,7 @@ Internet-Draft           Aether Protocol v0.1                 July 2026
 
 Fomicheva                   Expires 27 January 2027                [Page 7]
 
-Internet-Draft           Aether Protocol v0.1                 July 2026
+Internet-Draft              Aether Protocol v0.1                 July 2026
 
 
 3.4.  Key Derivation
@@ -420,7 +420,7 @@ Internet-Draft           Aether Protocol v0.1                 July 2026
 
 Fomicheva                   Expires 27 January 2027                [Page 8]
 
-Internet-Draft           Aether Protocol v0.1                 July 2026
+Internet-Draft              Aether Protocol v0.1                 July 2026
 
 
    Flow control operates at two levels:
@@ -467,7 +467,7 @@ Internet-Draft           Aether Protocol v0.1                 July 2026
 
 Fomicheva                   Expires 27 January 2027                [Page 9]
 
-Internet-Draft           Aether Protocol v0.1                 July 2026
+Internet-Draft              Aether Protocol v0.1                 July 2026
 
 
 6.  Congestion Control
@@ -520,7 +520,7 @@ Internet-Draft           Aether Protocol v0.1                 July 2026
 
 Fomicheva                   Expires 27 January 2027               [Page 10]
 
-Internet-Draft           Aether Protocol v0.1                 July 2026
+Internet-Draft              Aether Protocol v0.1                 July 2026
 
 
    Metadata protection:
@@ -562,7 +562,7 @@ Internet-Draft           Aether Protocol v0.1                 July 2026
 
 Fomicheva                   Expires 27 January 2027               [Page 11]
 
-Internet-Draft           Aether Protocol v0.1                 July 2026
+Internet-Draft              Aether Protocol v0.1                 July 2026
 
 
 9.  Connection Close
@@ -670,7 +670,7 @@ Internet-Draft           Aether Protocol v0.1                 July 2026
 
 Fomicheva                   Expires 27 January 2027               [Page 13]
 
-Internet-Draft           Aether Protocol v0.1                 July 2026
+Internet-Draft              Aether Protocol v0.1                 July 2026
 
 
 12.  Comparison with Existing Protocols
@@ -725,7 +725,7 @@ Internet-Draft           Aether Protocol v0.1                 July 2026
 
 Fomicheva                   Expires 27 January 2027               [Page 14]
 
-Internet-Draft           Aether Protocol v0.1                 July 2026
+Internet-Draft              Aether Protocol v0.1                 July 2026
 
 
    [RFC8032]   Josefsson, S. and I. Liusvaara, "Edwards-Curve Digital
@@ -779,7 +779,7 @@ Appendix A.  Reference Implementation
 
 Fomicheva                   Expires 27 January 2027               [Page 15]
 
-Internet-Draft           Aether Protocol v0.1                 July 2026
+Internet-Draft              Aether Protocol v0.1                 July 2026
 
 
 Author's Address
