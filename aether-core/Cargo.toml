@@ -2,9 +2,9 @@
 name = "aether-core"
 version = "0.1.0"
 edition = "2021"
-description = "Aether Protocol — универсальный L4 транспорт с нулевым доверием"
+description = "Aether Protocol — universal L4 transport with zero trust"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/aether-protocol/aether-core"
+repository = "https://github.com/nikaafo/aether-protocol"
 keywords = ["protocol", "transport", "quic-alternative", "p2p", "networking"]
 categories = ["network-programming", "cryptography"]
 

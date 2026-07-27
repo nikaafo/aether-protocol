@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 description = "Aether Protocol Enterprise SDK — Identity Manager, Monitoring, SLA"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/aether-protocol/aether-sdk"
+repository = "https://github.com/nikaafo/aether-protocol"
 keywords = ["aether", "sdk", "enterprise", "identity", "monitoring"]
 categories = ["network-programming", "cryptography"]
 
