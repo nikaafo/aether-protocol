@@ -6,8 +6,28 @@
 //! - Multi-path (path migrations, RTT per path)
 //! - Crypto operations (key rotations, decrypt errors)
 
-use metrics::{counter, gauge, histogram};
+use metrics::{counter, describe_counter, describe_gauge, describe_histogram, gauge, histogram};
 use std::time::Instant;
+
+/// Register all Aether metrics descriptions (call once at startup)
+pub fn register_metrics() {
+    describe_gauge!("aether_connections_active", "Active Aether connections");
+    describe_counter!("aether_connections_total", "Total connections opened");
+    describe_counter!("aether_handshake_success_total", "Successful handshakes");
+    describe_counter!("aether_handshake_failure_total", "Failed handshakes");
+    describe_histogram!("aether_handshake_duration_seconds", "Handshake duration in seconds");
+
+    describe_counter!("aether_streams_opened_total", "Total streams opened");
+    describe_counter!("aether_streams_closed_total", "Total streams closed");
+    describe_counter!("aether_stream_bytes_sent_total", "Total bytes sent");
+    describe_counter!("aether_stream_bytes_received_total", "Total bytes received");
+
+    describe_counter!("aether_path_migrations_total", "Total path migrations");
+    describe_histogram!("aether_path_rtt_microseconds", "Path RTT in microseconds");
+
+    describe_counter!("aether_key_rotations_total", "Total key rotations");
+    describe_counter!("aether_decrypt_errors_total", "Total decrypt errors");
+}
 
 /// Aether metrics registry
 pub struct AetherMetrics {
@@ -17,24 +37,7 @@ pub struct AetherMetrics {
 impl AetherMetrics {
     /// Create a new metrics collector
     pub fn new() -> Self {
-        // Initialize Prometheus metrics
-        gauge!("aether_connections_active", 0.0);
-        counter!("aether_connections_total", 0);
-        counter!("aether_handshake_success_total", 0);
-        counter!("aether_handshake_failure_total", 0);
-        histogram!("aether_handshake_duration_seconds", 0.0);
-
-        counter!("aether_streams_opened_total", 0);
-        counter!("aether_streams_closed_total", 0);
-        counter!("aether_stream_bytes_sent_total", 0);
-        counter!("aether_stream_bytes_received_total", 0);
-
-        counter!("aether_path_migrations_total", 0);
-        histogram!("aether_path_rtt_microseconds", 0.0);
-
-        counter!("aether_key_rotations_total", 0);
-        counter!("aether_decrypt_errors_total", 0);
-
+        register_metrics();
         Self {
             start_time: Instant::now(),
         }
